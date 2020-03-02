@@ -1,2 +1,75 @@
 = Monorepo for all Gradle Plugins =
+ifdef::env-github,env-browser[:outfilesuffix: .adoc]
 
+== Plugins ==
+
+[cols=4*,options=header]
+|===
+| Plugin
+| Description
+| Build
+| Version
+
+| <<gradle-conda-plugin/README#,io.logbee.gradle.conda>>
+| Setup a conda environment.
+|
++++
+<a href="https://github.com/logbee/gradle-plugins/actions?query=workflow%3Agradle-conda-plugin">
+    <img src="https://github.com/logbee/gradle-plugins/workflows/gradle-conda-plugin/badge.svg?branch=master" alt="Build Status">
+</a>
++++
+|
++++
+<a href="https://plugins.gradle.org/plugin/io.logbee.gradle.conda/0.2.0">
+    <img src="https://img.shields.io/badge/Version-0.2.0-green" alt="Version 0.2.0">
+</a>
++++
+
+| <<gradle-conda-plugin/README#,io.logbee.gradle.python>>
+| Build, test and assemble python projects.
+|
++++
+<a href="https://github.com/logbee/gradle-plugins/actions?query=workflow%3Agradle-conda-plugin">
+    <img src="https://github.com/logbee/gradle-plugins/workflows/gradle-conda-plugin/badge.svg?branch=master" alt="Build Status">
+</a>
++++
+|
++++
+<a href="https://plugins.gradle.org/plugin/io.logbee.gradle.python/0.2.0">
+    <img src="https://img.shields.io/badge/Version-0.2.0-green" alt="Version 0.2.0">
+</a>
++++
+
+| <<gradle-protobuf-plugin/README#,io.logbee.gradle.protobuf.provider>>
+| Provide protobuf sources to other projects within a multi-project setup.
+|
++++
+<a href="https://github.com/logbee/gradle-plugins/actions?query=workflow%3Agradle-protobuf-plugin">
+    <img src="https://github.com/logbee/gradle-plugins/workflows/gradle-protobuf-plugin/badge.svg?branch=master" alt="Build Status">
+</a>
++++
+|
++++
+<a href="https://plugins.gradle.org/plugin/io.logbee.gradle.protobuf.provider/0.3.2">
+    <img src="https://img.shields.io/badge/Version-0.3.2-green" alt="Version 0.3.2">
+</a>
++++
+
+| <<gradle-protobuf-plugin/README#,io.logbee.gradle.protobuf.python>>
+| Generate python sources from protobuf definitions.
+|
++++
+<a href="https://github.com/logbee/gradle-plugins/actions?query=workflow%3Agradle-protobuf-plugin">
+    <img src="https://github.com/logbee/gradle-plugins/workflows/gradle-protobuf-plugin/badge.svg?branch=master" alt="Build Status">
+</a>
++++
+|
++++
+<a href="https://plugins.gradle.org/plugin/io.logbee.gradle.protobuf.python/0.3.2">
+    <img src="https://img.shields.io/badge/Version-0.3.2-green" alt="Version 0.3.2">
+</a>
++++
+|===
+
+== Contributions ==
+All contributions are welcome: ideas, patches, documentation, bug reports, complaints.
