@@ -1,0 +1,8 @@
+ext {
+    groovyVersion = '2.5'
+    dependency = [
+        spock: [
+            "org.spockframework:spock-core:1.3-groovy-$groovyVersion",
+        ],
+    ]
+}

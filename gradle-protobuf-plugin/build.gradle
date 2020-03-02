@@ -1,33 +1,7 @@
-plugins {
-    id 'groovy'
-    id 'java-gradle-plugin'
-    id 'maven-publish'
-    id "com.gradle.plugin-publish" version "0.10.1"
-}
-
-project.group = 'io.logbee'
-
-repositories {
-    mavenCentral()
-}
+apply from: rootProject.file('dependencies.gradle')
 
 dependencies {
-    testCompile('org.spockframework:spock-core:1.3-groovy-2.5') {
-        exclude group: 'org.codehaus.groovy'
-    }
-}
 
-sourceSets {
-    integrationTest {
-        groovy {
-            srcDir file('src/integration/groovy')
-        }
-        resources {
-            srcDir file('src/integration/resources')
-        }
-        compileClasspath += sourceSets.main.output + configurations.testRuntime
-        runtimeClasspath += output + compileClasspath
-    }
 }
 
 gradlePlugin {
@@ -45,8 +19,8 @@ gradlePlugin {
 }
 
 pluginBundle {
-    website = 'https://github.com/logbee/gradle-protobuf-plugin'
-    vcsUrl = 'https://github.com/logbee/gradle-protobuf-plugin'
+    website = 'https://github.com/logbee/gradle-plugins'
+    vcsUrl = 'https://github.com/logbee/gradle-plugins'
     description = 'Generating source code from protobuf.'
     tags = ['protobuf', 'java', 'python']
 
@@ -73,13 +47,3 @@ publishing {
         }
     }
 }
-
-task integrationTest(type: Test) {
-    description = 'Runs the integration tests.'
-    group = 'verification'
-    testClassesDirs = sourceSets.integrationTest.output.classesDirs
-    classpath = sourceSets.integrationTest.runtimeClasspath
-    mustRunAfter test
-}
-
-check.dependsOn integrationTest
