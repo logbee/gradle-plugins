@@ -1,0 +1,85 @@
+plugins {
+    id 'groovy'
+    id 'java-gradle-plugin'
+    id 'maven-publish'
+    id "com.gradle.plugin-publish" version "0.10.1"
+}
+
+project.group = 'io.logbee'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testCompile('org.spockframework:spock-core:1.3-groovy-2.5') {
+        exclude group: 'org.codehaus.groovy'
+    }
+}
+
+sourceSets {
+    integrationTest {
+        groovy {
+            srcDir file('src/integration/groovy')
+        }
+        resources {
+            srcDir file('src/integration/resources')
+        }
+        compileClasspath += sourceSets.main.output + configurations.testRuntime
+        runtimeClasspath += output + compileClasspath
+    }
+}
+
+gradlePlugin {
+    //noinspection GroovyAssignabilityCheck
+    plugins {
+        protobufPublish {
+            id = 'io.logbee.gradle.protobuf.provider'
+            implementationClass = 'io.logbee.gradle.protobuf.ProtobufProviderPlugin'
+        }
+        protobufPython {
+            id = 'io.logbee.gradle.protobuf.python'
+            implementationClass = 'io.logbee.gradle.protobuf.python.ProtobufPythonPlugin'
+        }
+    }
+}
+
+pluginBundle {
+    website = 'https://github.com/logbee/gradle-protobuf-plugin'
+    vcsUrl = 'https://github.com/logbee/gradle-protobuf-plugin'
+    description = 'Generating source code from protobuf.'
+    tags = ['protobuf', 'java', 'python']
+
+    //noinspection GroovyAssignabilityCheck
+    plugins {
+        protobufPublish {
+            id = 'io.logbee.gradle.protobuf.provider'
+            displayName = 'Protobuf Provider Plugin'
+        }
+        protobufPython {
+            id = 'io.logbee.gradle.protobuf.python'
+            displayName = 'Protobuf Generator for Python Plugin'
+        }
+    }
+}
+
+publishing {
+    publications {
+        pluginPublication (MavenPublication) {
+            from components.java
+            groupId project.group
+            artifactId project.name
+            version project.version
+        }
+    }
+}
+
+task integrationTest(type: Test) {
+    description = 'Runs the integration tests.'
+    group = 'verification'
+    testClassesDirs = sourceSets.integrationTest.output.classesDirs
+    classpath = sourceSets.integrationTest.runtimeClasspath
+    mustRunAfter test
+}
+
+check.dependsOn integrationTest
