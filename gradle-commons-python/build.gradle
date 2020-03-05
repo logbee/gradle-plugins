@@ -1,0 +1,16 @@
+apply from: rootProject.file('dependencies.gradle')
+
+dependencies {
+
+}
+
+publishing {
+    publications {
+        pluginPublication (MavenPublication) {
+            from components.java
+            groupId project.group
+            artifactId project.name
+            version project.version
+        }
+    }
+}

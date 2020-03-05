@@ -12,21 +12,82 @@ buildscript {
 }
 
 subprojects {
-
     apply plugin: 'java'
+    project.apply plugin: 'maven'
+    project.apply plugin: 'maven-publish'
+
+    project.group = 'io.logbee'
+
+    ext.url = 'https://github.com/logbee/gradle-plugins/'
+    ext.scmUrl = 'https://github.com/logbee/gradle-plugins/'
+    ext.scmConnection = 'git@github.com:logbee/gradle-plugins.git'
+    ext.scmDevConnection = 'git@github.com:logbee/gradle-plugins.git'
+    ext.buildDate = new Date().format('yyyy-MM-dd HH:mm:ss ZZZZ')
+    ext.revision = { ->
+        def stdout = new ByteArrayOutputStream()
+        exec {
+            commandLine 'git', 'rev-parse', '--short', 'HEAD'
+            standardOutput = stdout
+        }
+        return stdout.toString().trim()
+    }()
+    ext.revisionDate = { ->
+        def stdout = new ByteArrayOutputStream()
+        exec {
+            commandLine 'git', 'show', '-s', '--format=%ci', 'HEAD'
+            standardOutput = stdout
+        }
+        return stdout.toString().trim()
+    }()
+
+    repositories {
+        mavenCentral()
+        jcenter()
+    }
+
+    task generatePomXml {
+        def filePath = "$buildDir/tmp/maven/pom.xml"
+        group = 'Publishing'
+        description = 'Generates a maven pom file.'
+        outputs.file(filePath)
+        doLast {
+            pom{}.withXml {
+                buildPomXml(project, asNode())
+            }.writeTo(filePath)
+        }
+    }
+
+    jar {
+        manifest.attributes([
+            'Implementation-Title'         : project.name,
+            'Implementation-Version'       : version,
+            'Implementation-Revision'      : revision,
+            'Implementation-Revision-Date' : revisionDate,
+            'Implementation-Build-Date'    : buildDate,
+            'Implementation-Vendor'        : 'logbee.io'
+        ])
+
+        from (rootProject.projectDir) {
+            include 'LICENSE'
+        }
+        from (generatePomXml) {
+            into ("META-INF/maven/$project.group/$project.name")
+        }
+        exclude('**/.keep')
+    }
+}
+
+configure ([
+    project(':gradle-conda-plugin'),
+    project(':gradle-protobuf-plugin')
+]) {
+
     apply plugin: 'groovy'
     apply plugin: 'maven-publish'
     apply plugin: 'java-gradle-plugin'
     apply plugin: "com.gradle.plugin-publish"
 
     apply from: rootProject.file('dependencies.gradle')
-
-    project.group = 'io.logbee'
-
-    repositories {
-        mavenCentral()
-        jcenter()
-    }
 
     dependencies {
         testCompile(dependency.spock) {
@@ -56,4 +117,35 @@ subprojects {
     }
 
     check.dependsOn integrationTest
+}
+
+def static buildPomXml(project, root) {
+
+    def listOfDevelopers = [
+        ["kkdh", "Elmar Schug", "elmar.schug@jayware.org", "Europe/Berlin"],
+    ]
+
+    root.appendNode('name', "${project.group}:${project.name}")
+    root.appendNode('description', "${project.description}")
+    root.appendNode('url', "${project.url}")
+    root.appendNode('inceptionYear', '2017')
+
+    def scm = root.appendNode('scm')
+    scm.appendNode('url', "${project.scmUrl}")
+    scm.appendNode('connection', "${project.scmConnection}")
+    scm.appendNode('developerConnection', "${project.scmDevConnection}")
+
+    def developers = root.appendNode('developers')
+    listOfDevelopers.each { element ->
+        def dev = developers.appendNode('developer')
+        dev.appendNode('id', element[0])
+        dev.appendNode('name', element[1])
+        dev.appendNode('email', element[2])
+        dev.appendNode('timezone', element[3])
+    }
+
+    def license = root.appendNode('licenses').appendNode('license')
+    license.appendNode('name', 'Apache License 2.0')
+    license.appendNode('url', 'http://www.apache.org/licenses/LICENSE-2.0')
+    license.appendNode('distribution', 'repo')
 }

@@ -1,2 +1,3 @@
+include 'gradle-commons-python'
 include 'gradle-conda-plugin'
 include 'gradle-protobuf-plugin'
