@@ -33,6 +33,7 @@ public class GenerateProtobufTask extends DefaultTask {
         this.includeDirectories = getProject().files();
     }
 
+    @InputFile
     public File getProtocExecutable() {
         return protocExecutable;
     }
@@ -71,6 +72,7 @@ public class GenerateProtobufTask extends DefaultTask {
         this.outputBaseDirectory = outputBaseDirectory;
     }
 
+    @Input
     public Backend getBackend() {
         return backend;
     }

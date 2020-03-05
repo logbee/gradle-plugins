@@ -45,6 +45,7 @@ public class PrepareProtobufTask extends DefaultTask {
         inputFiles.from(paths);
     }
 
+    @Input
     public PackageRewrite getRewritePackage() {
         return rewritePackage;
     }
