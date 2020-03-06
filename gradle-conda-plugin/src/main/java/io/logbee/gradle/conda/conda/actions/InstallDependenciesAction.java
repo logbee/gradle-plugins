@@ -1,8 +1,9 @@
 package io.logbee.gradle.conda.conda.actions;
 
-import io.logbee.gradle.conda.conda.CondaPluginExtension;
+import io.logbee.gradle.conda.CondaExtension;
 import io.logbee.gradle.conda.plugin.PythonPlugin;
 import io.logbee.gradle.conda.python.PythonPluginExtension;
+import io.logbee.gradle.python.Configurations;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.*;
@@ -22,14 +23,14 @@ public class InstallDependenciesAction implements Action<ResolvableDependencies>
     private final Logger log = LoggerFactory.getLogger(InstallDependenciesAction.class);
 
     private final Project project;
-    private final CondaPluginExtension condaExtension;
+    private final CondaExtension condaExtension;
     private final ExecActionFactory execActionFactory;
     private final ObjectFactory objectFactory;
 
     @Inject
     public InstallDependenciesAction(Project project, ExecActionFactory execActionFactory, ObjectFactory objectFactory) {
         this.project = project;
-        this.condaExtension = project.getExtensions().getByType(CondaPluginExtension.class);
+        this.condaExtension = project.getExtensions().getByType(CondaExtension.class);
         this.execActionFactory = execActionFactory;
         this.objectFactory = objectFactory;
     }
@@ -80,8 +81,8 @@ public class InstallDependenciesAction implements Action<ResolvableDependencies>
             if (project.getPlugins().hasPlugin(PythonPlugin.class)) {
 
                 final PythonPluginExtension pythonPluginExtension = project.getExtensions().getByType(PythonPluginExtension.class);
-                final Configuration apiConfiguration = project.getConfigurations().getByName(PythonPlugin.API_CONFIGURATION_NAME);
-                final Configuration defaultConfiguration = project.getConfigurations().getByName(PythonPlugin.DEFAULT_CONFIGURATION_NAME);
+                final Configuration apiConfiguration = project.getConfigurations().getByName(Configurations.API_CONFIGURATION_NAME);
+                final Configuration defaultConfiguration = project.getConfigurations().getByName(Configurations.DEFAULT_CONFIGURATION_NAME);
 
                 execute(apiConfiguration.getIncoming());
 

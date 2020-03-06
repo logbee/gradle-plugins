@@ -1,7 +1,7 @@
 package io.logbee.gradle.conda.conda.actions;
 
-import io.logbee.gradle.conda.conda.CondaPluginExtension;
-import io.logbee.gradle.conda.conda.MinicondaExtension;
+import io.logbee.gradle.conda.CondaExtension;
+import io.logbee.gradle.conda.MinicondaExtension;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.process.internal.ExecAction;
@@ -22,9 +22,9 @@ public class CreateCondaEnvironmentAction implements Action<Project> {
     @Override
     public void execute(Project project) {
         final MinicondaExtension minicondaExtension = project.getExtensions().getByType(MinicondaExtension.class);
-        final CondaPluginExtension condaPluginExtension = project.getExtensions().getByType(CondaPluginExtension.class);
+        final CondaExtension conda = project.getExtensions().getByType(CondaExtension.class);
         final ExecAction action = execActionFactory.newExecAction();
-        final File dir = condaPluginExtension.getEnvironmentDir();
+        final File dir = conda.getEnvironmentDir();
 
         action.executable(minicondaExtension.getCondaExecutable());
         action.args("create", "--prefix", dir, "python=3.7");

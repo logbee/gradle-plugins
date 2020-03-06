@@ -1,7 +1,7 @@
 apply from: rootProject.file('dependencies.gradle')
 
 dependencies {
-
+    implementation gradleApi()
 }
 
 publishing {

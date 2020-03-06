@@ -1,8 +1,6 @@
 package io.logbee.gradle.conda.conda.actions;
 
-import io.logbee.gradle.conda.conda.CondaPluginExtension;
-import io.logbee.gradle.conda.conda.MinicondaExtension;
-import io.logbee.gradle.conda.plugin.CondaPlugin;
+import io.logbee.gradle.conda.MinicondaExtension;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.Configuration;
@@ -11,6 +9,8 @@ import org.gradle.process.internal.ExecActionFactory;
 
 import javax.inject.Inject;
 import java.io.File;
+
+import static io.logbee.gradle.conda.Configurations.MINICONDA_INSTALLER_CONFIGURATION_NAME;
 
 public class BootstrapMinicondaAction implements Action<Project> {
 
@@ -23,7 +23,7 @@ public class BootstrapMinicondaAction implements Action<Project> {
 
     @Override
     public void execute(Project project) {
-        final Configuration configuration = project.getConfigurations().getByName(CondaPlugin.MINICONDA_INSTALLER_CONFIGURATION_NAME);
+        final Configuration configuration = project.getConfigurations().getByName(MINICONDA_INSTALLER_CONFIGURATION_NAME);
         final MinicondaExtension miniconda = project.getExtensions().getByType(MinicondaExtension.class);
         final File installationDir = miniconda.getInstallationDir();
 

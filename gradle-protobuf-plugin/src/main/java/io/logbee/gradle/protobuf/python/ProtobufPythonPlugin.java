@@ -5,6 +5,7 @@ import io.logbee.gradle.protobuf.ProtobufPlugin;
 import io.logbee.gradle.protobuf.ProtobufProviderPlugin;
 import io.logbee.gradle.protobuf.tasks.GenerateProtobufTask;
 import io.logbee.gradle.protobuf.tasks.PrepareProtobufTask;
+import io.logbee.gradle.python.PythonBasePlugin;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.Configuration;
@@ -37,6 +38,7 @@ public class ProtobufPythonPlugin implements Plugin<Project> {
     @Override
     public void apply(final Project project) {
         project.getPlugins().apply(ProtobufPlugin.class);
+        project.getPlugins().apply(PythonBasePlugin.class);
 
         final ProtobufExtension protobufExtension = project.getExtensions().getByType(ProtobufExtension.class);
         final SourceSetContainer sourceSets = project.getExtensions().getByType(SourceSetContainer.class);
@@ -47,12 +49,7 @@ public class ProtobufPythonPlugin implements Plugin<Project> {
             final Configuration generateConfiguration = project.getConfigurations().getByName(ProtobufProviderPlugin.PROTOBUF_GENERATE_CONFIGURATION_NAME);
             final Configuration includeConfiguration = project.getConfigurations().getByName(ProtobufProviderPlugin.PROTOBUF_INCLUDE_CONFIGURATION_NAME);
 
-            SourceDirectorySet pythonSourceDirectorySet = (SourceDirectorySet) sourceSet.getExtensions().findByName(Python.getSourceDirectoryName());
-
-            if (pythonSourceDirectorySet == null) {
-                pythonSourceDirectorySet = objectFactory.sourceDirectorySet(sourceSet.getName(), String.format("%s Python source", sourceSet.getName()));
-                sourceSet.getExtensions().add(PROTOBUF_SOURCESET_NAME, pythonSourceDirectorySet);
-            }
+            final SourceDirectorySet pythonSourceDirectorySet = (SourceDirectorySet) sourceSet.getExtensions().getByName(Python.getSourceDirectoryName());
 
             final TaskProvider<PrepareProtobufTask> prepareSourcesTask = project.getTasks().register(getPrepareSourcesTaskName(sourceSet, Python), PrepareProtobufTask.class, task -> {
 

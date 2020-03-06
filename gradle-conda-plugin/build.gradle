@@ -1,7 +1,7 @@
 apply from: rootProject.file('dependencies.gradle')
 
 dependencies {
-    compile project(':gradle-commons-python')
+    api project(':gradle-python-base')
 }
 
 gradlePlugin {
@@ -9,7 +9,7 @@ gradlePlugin {
     plugins {
         condaPlugin {
             id = 'io.logbee.gradle.conda'
-            implementationClass = 'io.logbee.gradle.conda.plugin.CondaPlugin'
+            implementationClass = 'io.logbee.gradle.conda.CondaPlugin'
         }
         pythonPlugin {
             id = 'io.logbee.gradle.python'

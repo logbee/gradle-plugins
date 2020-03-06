@@ -1,6 +1,6 @@
 package io.logbee.gradle.conda.python.test;
 
-import io.logbee.gradle.conda.conda.CondaPluginExtension;
+import io.logbee.gradle.conda.CondaExtension;
 import io.logbee.gradle.conda.python.PythonPluginExtension;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.file.ConfigurableFileCollection;
@@ -19,8 +19,7 @@ import java.io.FileWriter;
 public class PyTestTask extends DefaultTask {
 
     public static TaskProvider<PyTestTask> register(ProjectInternal project) {
-        final CondaPluginExtension condaExtension = project.getExtensions().getByType(CondaPluginExtension.class);
-        final PythonPluginExtension pythonPluginExtension = project.getExtensions().getByType(PythonPluginExtension.class);
+        final CondaExtension condaExtension = project.getExtensions().getByType(CondaExtension.class);
 
         return project.getTasks().register("test", PyTestTask.class, task -> {
 
@@ -33,7 +32,7 @@ public class PyTestTask extends DefaultTask {
             task.setGroup("Verification");
             task.setDescription("Runs the unit tests.");
             task.setPyTestExecutable(pyTestExecutable);
-            task.getMainSources().from(mainSourceSet.getExtensions().getByName("python"));
+            task.getMainSources().from(((SourceDirectorySet) mainSourceSet.getExtensions().getByName("python")).getSrcDirs());
             task.getTestSources().from(testSourceSet.getExtensions().getByName("python"));
             task.setOutputDir(outputDir);
             task.setReportFile(new File(outputDir, "junit-report.xml"));
@@ -85,13 +84,17 @@ public class PyTestTask extends DefaultTask {
 
         execAction.executable(getPyTestExecutable());
 
+        String pythonPath = "";
         if (!getMainSources().isEmpty()) {
-            final StringBuilder pythonPath = new StringBuilder();
+            StringBuilder pythonPathBuilder = new StringBuilder();
             for (File file : getMainSources().getFiles()) {
-                pythonPath.append(file.getPath()).append(":");
+                pythonPathBuilder.append(file.getPath()).append(":");
             }
-            execAction.environment("PYTHONPATH", pythonPath);
+            pythonPath = pythonPathBuilder.toString();
+
         }
+
+        execAction.environment("PYTHONPATH", pythonPath);
 
         execAction.args("--rootdir", getOutputDir());
         execAction.args("-c", getIniFile());

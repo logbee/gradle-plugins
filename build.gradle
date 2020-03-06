@@ -3,16 +3,18 @@ apply from: rootProject.file('dependencies.gradle')
 buildscript {
     repositories {
         maven {
-            url "https://plugins.gradle.org/m2/"
+            url 'https://plugins.gradle.org/m2/'
         }
     }
     dependencies {
-        classpath "dev.gradleplugins:gradle-plugin-development:0.0.21"
+        classpath 'dev.gradleplugins:gradle-plugin-development:0.0.21'
+        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.70'
     }
 }
 
 subprojects {
     apply plugin: 'java'
+    apply plugin: 'kotlin'
     project.apply plugin: 'maven'
     project.apply plugin: 'maven-publish'
 
@@ -90,6 +92,7 @@ configure ([
     apply from: rootProject.file('dependencies.gradle')
 
     dependencies {
+        testCompile gradleTestKit()
         testCompile(dependency.spock) {
             exclude group: 'org.codehaus.groovy'
         }
