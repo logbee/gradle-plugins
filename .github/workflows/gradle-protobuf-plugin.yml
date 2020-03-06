@@ -18,4 +18,4 @@ jobs:
           java-version: 1.8
 
       - name: Build with Gradle
-        run: ./gradlew :gradle-protobuf-plugin:build
+        run: ./gradlew :gradle-protobuf-plugin:build --continue
