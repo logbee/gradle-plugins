@@ -101,12 +101,12 @@ configure ([
     sourceSets {
         integrationTest {
             groovy {
-                srcDir file('src/integration/groovy')
+                srcDir file('src/integrationTest/groovy')
             }
             resources {
-                srcDir file('src/integration/resources')
+                srcDir file('src/integrationTest/resources')
             }
-            compileClasspath += sourceSets.main.output + configurations.testRuntime
+            compileClasspath += sourceSets.main.output + configurations.testRuntimeClasspath
             runtimeClasspath += output + compileClasspath
         }
     }
