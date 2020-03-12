@@ -5,7 +5,8 @@ import java.io.File
 
 interface MinicondaExtension {
 
-    class MinicondaNotation(val name: String, val version: String, val extension: String, val classifier: String) {
+    class MinicondaNotation(val name: String, val version: String, val type: String, val extension: String, val classifier: String) {
+
         fun asModuleNotation(): Map<String, String> {
             val notation: MutableMap<String, String> = HashMap()
             notation["group"] = "miniconda"

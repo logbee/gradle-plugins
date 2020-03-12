@@ -10,14 +10,19 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Dependency
 import org.gradle.api.artifacts.ModuleDependency
+import org.gradle.api.artifacts.repositories.IvyPatternRepositoryLayout
 import org.gradle.api.model.ObjectFactory
+import org.slf4j.LoggerFactory
 import javax.inject.Inject
 
 
 class CondaPlugin @Inject constructor(private val objectFactory: ObjectFactory) : Plugin<Project> {
 
+    private val log = LoggerFactory.getLogger(CondaPlugin::class.java)
+
     companion object {
         const val IVY_REPO_URL = "https://repo.continuum.io"
+        const val IVY_REPO_LAYOUT = "[organisation]/[module]-[revision]-[classifier].[ext]"
     }
 
     override fun apply(project: Project) {
@@ -36,9 +41,9 @@ class CondaPlugin @Inject constructor(private val objectFactory: ObjectFactory) 
     private fun createRepository(project: Project) {
         project.repositories.ivy { ivy ->
             ivy.setUrl(IVY_REPO_URL)
-            ivy.patternLayout { layout ->
-                layout.artifact("[organisation]/[module]-[revision]-[classifier].[ext]")
-            }
+            ivy.patternLayout { layout -> layout.artifact("[organisation]/[module]-[revision]-[classifier].[ext]") }
+            ivy.metadataSources { meta -> meta.artifact() }
+            log.info("Added Ivy repository '{}' for miniconda installer with layout '{}'", IVY_REPO_URL, IVY_REPO_LAYOUT)
         }
     }
 
@@ -64,15 +69,13 @@ class CondaPlugin @Inject constructor(private val objectFactory: ObjectFactory) 
         val miniconda = extension.minicondaNotation
         val minicondaConfiguration = project.configurations.getByName(MINICONDA_INSTALLER_CONFIGURATION_NAME)
         minicondaConfiguration.incoming.beforeResolve { dependencies ->
-            if (dependencies.dependencies.isEmpty()) {
-                val handler = project.dependencies
-                val minicondaInstaller = handler.add(MINICONDA_INSTALLER_CONFIGURATION_NAME, miniconda.asModuleNotation()) as ModuleDependency
-                minicondaInstaller.artifact { artifact ->
-                    artifact.name = miniconda.name
-                    artifact.type = miniconda.extension
-                    artifact.classifier = miniconda.classifier
-                    artifact.extension = miniconda.extension
-                }
+            val handler = project.dependencies
+            val minicondaInstaller = handler.add(MINICONDA_INSTALLER_CONFIGURATION_NAME, miniconda.asModuleNotation()) as ModuleDependency
+            minicondaInstaller.artifact { artifact ->
+                artifact.name = miniconda.name
+                artifact.type = miniconda.type
+                artifact.classifier = miniconda.classifier
+                artifact.extension = miniconda.extension
             }
         }
     }

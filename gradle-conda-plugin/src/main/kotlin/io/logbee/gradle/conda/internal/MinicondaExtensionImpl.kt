@@ -13,9 +13,9 @@ open class MinicondaExtensionImpl @Inject constructor(override val project: Proj
         val OS = OperatingSystem.current()
     }
 
-    override var baseDir: File = File(project.gradle.gradleUserHomeDir, "miniconda")
+    override var baseDir: File = File(project.gradle.gradleUserHomeDir, "caches/io.logbee.gradle/")
 
-    override var version: String = "4.7.10"
+    override var version: String = "4.7.10" // "4.7.12.1"
 
     override val installationDir: File
         get() = File(baseDir, getName() + "-" + version)
@@ -24,7 +24,13 @@ open class MinicondaExtensionImpl @Inject constructor(override val project: Proj
         get() = File(installationDir, "bin/conda")
 
     override val minicondaNotation: MinicondaNotation
-        get() = MinicondaNotation(getName(), version, getExtension(), getOsName() + "-" + getArch());
+        get() = MinicondaNotation(
+                name = getName(),
+                version = version,
+                type = getExtension(),
+                extension = getExtension(),
+                classifier = getOsName() + "-" + getArch()
+        )
 
     private fun getName(): String {
         return "Miniconda3"

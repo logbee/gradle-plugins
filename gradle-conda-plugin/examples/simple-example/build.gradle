@@ -24,6 +24,6 @@ sourceSets {
 }
 
 dependencies {
-    api 'anaconda:toolz:0.10.0'
-    test 'conda-forge:pytest:5.1.2'
+    api conda('anaconda:toolz:0.10.0')
+    test conda('conda-forge:pytest:5.1.2')
 }
